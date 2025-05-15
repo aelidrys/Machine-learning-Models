@@ -12,7 +12,7 @@ Linear Regression is a [supervised learning](https://en.wikipedia.org/wiki/Super
 <h5>assume that there is a linear relationship between size of house and his price.</h5>
 <h5>the goal of linear regression is to find the best fitting line to describe the relationship between the input (house size) and the output (house price).</h5>
 
-<img src="img/linear_reg.png" width="500">
+<img src="img/linear_reg.png" width="800">
 
 ##### we have alotof lines. each line represented by m and c, m the slope defined by `m =  (y₂ - y₁) / (x₂ - x₁)` and c the intercept of the line with y axis
 ##### each line allows us to predict the price of each house, denoted by `x`, based on its size, denoted by `y`. by using the equation of the line `y = m*x + c`, but the predicted price may not be valid depends on the ability of this line to discribe the data.
