@@ -38,7 +38,15 @@ Linear Regression is a [supervised learning](https://en.wikipedia.org/wiki/Super
 <img src="img/mse.png" width="500">
 
 <h5>we compute the error in eash point and sume the errors. after that we divides the sume of errors over the number of points, finily we get the average value of error for our line</h5>
+<h5>now we can take a set of lines and calculate the error (average of error) in each one of them, and select the line that have minimum error but this method not work, because we need to generate a huge number of lines and hupfuly there is one line that can fit the data</h5>
 
-<!-- <h5>now we can compute the cost or error of any generated line the next steap is to find the line that givs the minimum error</h5> -->
+<h5>We know that there is one line that gives the minimum error, so we can use a graph of the error curve as a function of the slope m to make this clearer, The x-axis represents m, and the y-axis represents the error. We consider the intercept c as a constant to simplify the analysis.</h5>
+
+![](img/error_curve.png)
+
+<h5>We are dealing with a convex function, and we want to find its minimum using the derivative. From any point on the curve, we can move toward the minimum by following the gradient. To do this, we initialize the slope m with a random value, compute the derivative of the error function, and update m using the rule: 
+new_m=m-(d(error)/dm*learning_rate), We repeat this process until the difference between successive values of the derivative becomes very small or close to zero. The learning rate is a parameter that controls how large each update step is.</h5>
+
+
 
 
