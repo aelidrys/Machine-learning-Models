@@ -5,50 +5,50 @@ import numpy as np
 
 
 class NeuralNetwork:
-    def __init__(self, hidden_layer_weights, output_layer_weights, activation_type = 'poly'):
-        self.lr = 0.5  # learning rate
+    def __init__(self, hidden_layer_weights, output_layer_weights, activation_type = 'poly', lr = 0.00001):
+        self.lr = lr  # learning rate
         self.hidden_layer = NeuronLayer(hidden_layer_weights, activation_type)
         self.output_layer = NeuronLayer(output_layer_weights, activation_type)
 
     def feed_forward(self, input):
         outputs = self.hidden_layer.feed_forward(input)
-        print(f'outputs: {outputs}')
+        # print(f'outputs: {outputs}')
         outputs = self.output_layer.feed_forward(outputs)
-        print(f'outputs: {outputs}')
+        # print(f'outputs: {outputs}')
+        return outputs
 
     def compute_delta(self, target):
-        # Base case rule for output layer
-        self.dE_dO_net = np.zeros(len(self.output_layer.neurons))
+        # Base case rule for output layer   
+        self.dE_dO_out = np.zeros(len(self.output_layer.neurons), dtype=float)
+        self.dE_dO_net = np.zeros(len(self.output_layer.neurons), dtype=float)
         for i, neuron in enumerate(self.output_layer.neurons):
-            self.dE_dO_net[i] = (neuron.output - target[i]) * neuron.activation_derv()
-            
-
-        print(f'dE_dO_net = {self.dE_dO_net}')
+            self.dE_dO_out[i] = neuron.output - target[i]
+            self.dE_dO_net[i] = self.dE_dO_out * neuron.activation_derv()
+        # print(f'dE_dO_net = {self.dE_dO_net}')
 
         # Sum on neighbours formula for hidden neuron
-        self.dE_dH_net = np.zeros(len(self.hidden_layer.neurons))
+        self.dE_dH_out = np.zeros(len(self.hidden_layer.neurons), dtype=float)
+        self.dE_dH_net = np.zeros(len(self.hidden_layer.neurons), dtype=float)
         for i, neuron in enumerate(self.hidden_layer.neurons):
-            res = np.dot(self.dE_dO_net, self.output_layer.weights[:,i])
-            print(f'res = {res}' )
-            self.dE_dH_net[i] = res  * neuron.activation_derv()
-
-        print(f'dE_dH_net = {self.dE_dH_net}')
+            self.dE_dH_out = np.dot(self.dE_dO_net, self.output_layer.weights[:,i])
+            self.dE_dH_net[i] = self.dE_dH_out  * neuron.activation_derv()
+        # print(f'dE_dH_net = {self.dE_dH_net}')
 
     def update_weights(self):
         # Update output layer
         for i, neuron in enumerate(self.output_layer.neurons):
-            new_weights = self.dE_dO_net[i] * neuron.input
-            print(f'\n1new_weights: {self.output_layer.weights[i]}')
-            self.output_layer.weights[i] = self.output_layer.weights[i] - new_weights * self.lr
-            print(f'2new_weights: {self.output_layer.weights[i]}')
+            dE_dW = self.dE_dO_net[i] * neuron.input
+            # print(f'\nold_weights: {self.output_layer.weights[i]}')
+            self.output_layer.weights[i] = self.output_layer.weights[i] - dE_dW * self.lr
+            # print(f'new_weights: {self.output_layer.weights[i]}')
             
             
         # Update hidden layer
         for i, neuron in enumerate(self.hidden_layer.neurons):
-            new_weights = self.dE_dH_net[i] * neuron.input
-            print(f'\n1new_weights: {self.hidden_layer.weights[i]}')
-            self.hidden_layer.weights[i] = self.hidden_layer.weights[i] - new_weights * self.lr
-            print(f'2new_weights: {self.hidden_layer.weights[i]}')
+            dE_dW = self.dE_dH_net[i] * neuron.input
+            # print(f'\nold_weights: {self.hidden_layer.weights[i]}')
+            self.hidden_layer.weights[i] = self.hidden_layer.weights[i] - dE_dW * self.lr
+            # print(f'new_weights: {self.hidden_layer.weights[i]}')
             
         
 
@@ -57,6 +57,8 @@ class NeuralNetwork:
         print('network output:', output)
         self.compute_delta(target)
         self.update_weights()
+        return self.hidden_layer.weights, self.output_layer.weights
+             
 
 
 class NeuronLayer:
@@ -91,13 +93,13 @@ class Neuron:
         if self.activation_type == 'poly':
             return net**2
         if self.activation_type == 'sigmoid':
-            pass
+            return 1 / (1 + np.exp(-net))
 
     def activation_derv(self):
         if self.activation_type == 'poly':
             return self.net*2
         if self.activation_type == 'sigmoid':
-            pass
+            return self.activation(self.net) * (1 - self.activation(self.net))
 
 
 
