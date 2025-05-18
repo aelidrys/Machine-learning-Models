@@ -22,9 +22,13 @@ class GradientDescent(BaseEstimator, RegressorMixin):
         return np.dot(X,self.__wights)
     
     def cost_f(self, X, Y, W):
+        # X input
+        # Y output/target
+        # W weights
+        # X.shape[0] - number of exampels
         exampels = X.shape[0]
         pred = np.dot(X, W)
-        error = pred - Y 
+        error = pred - Y
         cost = error.T.dot(error) / 2 * exampels
         return cost[0][0]
 

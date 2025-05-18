@@ -39,7 +39,7 @@ using a linear function train with a gradient descent algorithm.</h3>
     ```python
     import pandas as pd
 
-    dfile_name = "data.csv"
+    file_name = "data.csv"
     data_csv = pd.read_csv(file_name)
     ```
   - #### Split the data into input X and output or target Y
@@ -78,6 +78,82 @@ using a linear function train with a gradient descent algorithm.</h3>
 - ### Trianing with <a href=''>Gradient Descent</a> algorithm</h4>
   - #### Create Gadient Descent Model
     - ##### to discover theore behinde gradient descent check this [Document](../README.md)
+    - #### create a class GradientDescent and init its varibels 
+      ```python
+      class GradientDescent(BaseEstimator, RegressorMixin):
+        def __init__(self, fit_intercept=False, lr=0.1, pr=1e-9, max_itr=10000, W1=None):
+          self.fit_intercept = fit_intercept # add column of ones to input X or not
+          self.lr = lr # learning rate
+          self.pr = pr # presission
+          self.max_itr = max_itr # max iterations
+          self.W1 = W1 # weights
+      ```
+      ##### weights in this case is a matrix of n row and two column m and c in real word we have many features so we have m1, m2, m3, ... mot just m, c
+    - #### create a cost function (also known as error  or loss function) `error = 1/2n Σ((m*x+c)-y_r)^2` To implement this in Python, we use the numpy library, which provides efficient matrix operations.
+      ```python
+      def cost_f(self, X, Y, W):
+          # X input
+          # Y output/target
+          # W weights
+          # X.shape[0] - number of exampels
+          exampels = X.shape[0]
+          pred = np.dot(X, W)
+          error = pred - Y
+          cost = error.T.dot(error) / 2 * exampels
+          return cost[0][0]
+
+      ```
+    - #### create derivative of cost function `d(error)/dm = 1/n Σ((m*x+c)-y_r)*x`
+      ```python
+      def f_derive(self, X, Y, W):
+        n = X.shape[0]
+        pred = np.dot(X, W)
+        error = pred - Y
+        gr = X.T @ error / n
+        return gr
+      ```
+    - #### Start training iterations until the derivative of cost function equal or close to zero or reach the max_itr
+      ```python
+      def fit(self, X, Y):
+        if self.fit_intercept: 
+          # if fit_intercept=True it mean there no column
+          # of ones to the left side of X so add it
+            X = np.hstack([np.ones((X.shape[0],1)),X])
+        if self.W1 is None:
+            self.W1 = np.random.rand(X.shape[1],1)
+        cur_p = self.W1
+        last_p = cur_p + 100
+
+        iter = 0
+        while norm(cur_p - last_p) > self.pr and iter < self.max_itr:
+            last_p = cur_p.copy()
+            gr = self.f_derive(X, Y, cur_p)
+            cur_p -= gr * self.lr
+            iter += 1
+        self.__wights = cur_p.copy()
+        return cur_p
+      ```
+      ##### in each itr copy the current weights `cur_p` in `last_p` then update it and check if the difference between `last_p` and `cur_p` is still great than presission and `itr < max_itr`
+      ##### why we need to add ones i the left of input x we have `y=m*x+c=m*x+1*c` to implement this by using matrix multibication we have two weights `W = [m, c]` to mutibly in `X` also shold be two so we add ones `X = [1, x]`
+    - #### add predict function
+      ```python
+      def predict(self, X):
+        if self.__wights is None:
+            raise ValueError("Model has not been fitted yet!")
+        if self.fit_intercept:
+            X = np.hstack([np.ones((X.shape[0],1)),X])
+        return np.dot(X,self.__wights)
+      ```
+    - #### add a function to calculate the performence/score
+      ```python
+      def score(self, X, Y):
+        # R^2 score
+        
+        y_pr = self.predict(X)
+        u = np.sum((Y - y_pr) ** 2)
+        v = np.sum((Y - np.mean(Y)) ** 2)
+        return 1 - u / v
+      ```
 ---
 - ### Visualizing to see if our model undestand the data or not</h4>
 
