@@ -134,7 +134,7 @@ using a linear function train with a gradient descent algorithm.</h3>
         return cur_p
       ```
       ##### in each itr copy the current weights `cur_p` in `last_p` then update it and check if the difference between `last_p` and `cur_p` is still great than presission and `itr < max_itr`
-      ##### why we need to add ones i the left of input x we have `y=m*x+c=m*x+1*c` to implement this by using matrix multibication we have two weights `W = [m, c]` to mutibly in `X` also shold be two so we add ones `X = [1, x]`
+      ##### why we need to add ones i the left of input x we have `y=m*x+c = m*x+1*c` to implement this by using matrix multibication we have two weights `W = [m, c]` to mutibly in `X` also shold be two so we add one `X = [1, x]`
     - #### add predict function
       ```python
       def predict(self, X):
