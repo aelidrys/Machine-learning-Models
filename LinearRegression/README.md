@@ -16,7 +16,7 @@
 
 #### in figure 1 we have alotof lines. each line represented by m and c.
 #### m the slope of line defined by `m =  (y₂ - y₁) / (x₂ - x₁)` and c the intercept of the line with y axis show figure 2
-##### each line allows us to predict the price of each house, denoted by `Y`, based on its size, denoted by `X`. by using the equation of the line `y = m*x + c`, but the predicted price may not be valid depends on the ability of this line to discribe the data.
+#### each line allows us to predict the price of each house, denoted by `Y`, based on its size, denoted by `X`. by using the equation of the line `y = m*x + c`, but the predicted price may not be valid depends on the ability of this line to discribe the data.
 
 #### In the figure 1 there are different lines and the best line is the orange line. We choose this line by seeing the figure and comparing the lines, but the computer cannot do this, there are a set of complex operations that the computer performs to choose the best line.
 
@@ -32,7 +32,7 @@
 
 <img src="https://miro.medium.com/v2/resize:fit:1400/1*jmd_lPcwkZ6QByMfv2itXg.png" width="500">
 
-##### to count the average value of error we aplly this error function over all points of data, the exprission of average also named mean squared error  is shown in the image below
+#### to count the average value of error we aplly this error function over all points of data, the exprission of average also named mean squared error  is shown in the image below
 
 
 <img src="img/mse.png" width="500">
