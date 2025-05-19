@@ -50,7 +50,7 @@ using a linear function train with a gradient descent algorithm.</h3>
      X = np.array(data_csv["km"]).reshape(-1,1)
      Y = np.array(data_csv["price"]).reshape(-1,1)
     ```
-  - #### Split the input X and the target Y to trainin and validation sets
+  - #### Split the input X and the target Y to training and validation sets
     ```python
     from sklearn.model_selection import train_test_split
 
@@ -59,7 +59,7 @@ using a linear function train with a gradient descent algorithm.</h3>
     X_train, X_val, Y_train, Y_val = train_test_split(X,Y, test_size=0.2, random_state=88)
 
     ```
-    - <h5>80% of data for training and keep 20% for testing</h5>
+    - <h5>using 80% of data for training and keep 20% for testing</h5>
     - <h5>We fix the `random_state` to 88 to ensure reproducibility. It controls how the data is shuffled before splitting.</h5>
 
 
@@ -72,13 +72,13 @@ using a linear function train with a gradient descent algorithm.</h3>
     X_train = scaler_X.transform(X_train)
     X_val = scaler_X.transform(X_val)
     ```
-    this steap help learning rate to control the jumps of gradient descent also avoid large numbers
+    this step help learning rate to control the jumps of gradient descent also avoid large numbers
 
 ---
 
 - ### Trianing with <a href=''>Gradient Descent</a> algorithm</h4>
   - #### Create Gadient Descent Model
-    - ##### to discover theore behinde gradient descent check this [Document](../README.md)
+    - ##### to discover theore behind gradient descent check this [Document](../README.md)
     - #### create a class GradientDescent and init its varibels 
       ```python
       class GradientDescent(BaseEstimator, RegressorMixin):
@@ -89,16 +89,15 @@ using a linear function train with a gradient descent algorithm.</h3>
           self.max_itr = max_itr # max iterations
           self.W1 = W1 # weights
       ```
-      ##### weights in this case is a matrix of n row and two column m and c in real word we have many features so we have m1, m2, m3, ... mot just m, c
-    - #### create a cost function (also known as error  or loss function) `error = 1/2n Σ((m*x+c)-y_r)^2` To implement this in Python, we use the numpy library, which provides efficient matrix operations.
+      ##### weights in this case is a matrix of n row and two column m and c in real word we have many features so we have `m1, m2, m3, ...` not just `m, c`
+    - #### create a cost function (also known as error  or loss function) defined by `error = 1/2n Σ((m*x+c)-y_r)^2` To implement this in Python, we use the numpy library, which provides efficient matrix operations.
       ```python
       def cost_f(self, X, Y, W):
           # X input
           # Y output/target
           # W weights
-          # X.shape[0] - number of exampels
-          exampels = X.shape[0]
-          pred = np.dot(X, W)
+          exampels = X.shape[0] # number of exampels
+          pred = np.dot(X, W) # predicted target
           error = pred - Y
           cost = error.T.dot(error) / 2 * exampels
           return cost[0][0]
@@ -107,18 +106,17 @@ using a linear function train with a gradient descent algorithm.</h3>
     - #### create derivative of cost function `d(error)/dm = 1/n Σ((m*x+c)-y_r)*x`
       ```python
       def f_derive(self, X, Y, W):
-        n = X.shape[0]
-        pred = np.dot(X, W)
+        n = X.shape[0] # number of exampels
+        pred = np.dot(X, W) # predicted target
         error = pred - Y
-        gr = X.T @ error / n
+        gr = X.T @ error / n # final derivative
         return gr
       ```
     - #### Start training iterations until the derivative of cost function equal or close to zero or reach the max_itr
       ```python
       def fit(self, X, Y):
         if self.fit_intercept: 
-          # if fit_intercept=True it mean there no column
-          # of ones to the left side of X so add it
+          # add columnof ones to the left side of matrix X
             X = np.hstack([np.ones((X.shape[0],1)),X])
         if self.W1 is None:
             self.W1 = np.random.rand(X.shape[1],1)
@@ -134,8 +132,18 @@ using a linear function train with a gradient descent algorithm.</h3>
         self.__wights = cur_p.copy()
         return cur_p
       ```
-      ##### in each itr copy the current weights `cur_p` in `last_p` then update it and check if the difference between `last_p` and `cur_p` is still great than presission and `itr < max_itr`
-      ##### why we need to add ones i the left of input x we have `y=m*x+c = m*x+1*c` to implement this by using matrix multibication we have two weights `W = [m, c]` to mutibly in `X` also shold be two so we add one `X = [1, x]`
+      ##### in each itr copy the current weights `cur_p` in `last_p`, then update it and check if the difference between `last_p` and `cur_p` is still great than presission and `itr < max_itr`, if this condition no mush valid stop and return the learning weights `cur_p`
+
+      ##### Why do we need to add a column of ones to the input X?
+      ##### In the linear equation y = m * x + c, we can rewrite this as y = m * x + 1 * c to treat both m and c as weights.
+      ##### To express this using matrix multiplication, we represent the weights as a vector W = [c, m], and the input as X = [1, x].
+
+      ##### So the equation becomes:
+        ```r
+        y = W · X^T = [c, m] · [1, x]^T
+        ```
+      ##### To make this multiplication valid for all data points, we add a column of ones to the input matrix X. This allows us to include the intercept c (also called bias) as part of the weights vector, simplifying implementation.
+      
     - #### add predict function
       ```python
       def predict(self, X):
