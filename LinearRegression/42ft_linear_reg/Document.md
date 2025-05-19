@@ -30,6 +30,7 @@ using a linear function train with a gradient descent algorithm.</h3>
 #### The column `km` represents the kilometers driven by the car.  
 #### The column `price` is the selling price of the car.
 
+#### The goal is to create a linear regression model that takes `km` as input and predicts the `price` for a new example. 
 
 <h2>Code Steps</h2>
 
